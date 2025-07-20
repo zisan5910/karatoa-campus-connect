@@ -89,11 +89,20 @@ function App() {
     setActiveSection('profile');
   };
 
+  // Language toggle handler
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'en' ? 'bn' : 'en');
+  };
+
   // Render current page
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'research':
-        return <Research language={language} />;
+        return <Research 
+          language={language} 
+          onLanguageToggle={toggleLanguage}
+          onNavigateHome={handleBackToHome}
+        />;
       case 'blog':
         return <Blog onBack={handleBackToHome} language={language} />;
       default:
