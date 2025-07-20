@@ -9,7 +9,7 @@ interface BlogProps {
   language: 'en' | 'bn';
 }
 
-const Blog = ({ onBack, language = 'en' }: BlogProps) => {
+const Blog = ({ language = 'en' }: BlogProps) => {
   const pageTitle = {
     en: 'Poetry World',
     bn: 'কবিতার ভুবন'

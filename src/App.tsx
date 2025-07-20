@@ -93,7 +93,7 @@ function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'research':
-        return <Research onBack={handleBackToHome} language={language} />;
+        return <Research language={language} />;
       case 'blog':
         return <Blog onBack={handleBackToHome} language={language} />;
       default:
