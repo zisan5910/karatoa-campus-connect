@@ -219,7 +219,11 @@ function App() {
       {renderCurrentPage()}
 
       {/* Professional Floating Menu */}
-      <FloatingMenu language={language} />
+      <FloatingMenu 
+        activeSection={activeSection}
+        scrollToSection={scrollToSection}
+        language={language}
+      />
     </div>
   );
 }
