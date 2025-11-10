@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { blogData, type BlogPost } from '../data/blogData';
 import { Calendar } from 'lucide-react';
 import { cn } from '../lib/utils';
+import Footer from '../components/Footer';
 
 interface BlogProps {
   language: 'en' | 'bn';
@@ -122,9 +123,10 @@ const Blog = ({ language }: BlogProps) => {
                   )}
                 </div>
               </motion.article>
-            ))}
-          </div>
+          ))}
+        </div>
       </div>
+      <Footer language={language} />
     </div>
   );
 };

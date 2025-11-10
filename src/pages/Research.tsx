@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { researchData, ResearchItem } from '../data/researchData';
+import Footer from '../components/Footer';
 
 interface ResearchProps {
   language: 'en' | 'bn';
@@ -192,6 +193,7 @@ const Research = ({ language }: ResearchProps) => {
           ))}
         </div>
       </div>
+      <Footer language={language} />
     </div>
   );
 };

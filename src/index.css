@@ -3,6 +3,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Content Protection Styles */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection for links */
+a, button, input, textarea, select {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* Prevent right-click context menu */
+body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Prevent screenshot on some browsers */
+@media print {
+  body {
+    display: none;
+  }
+}
+
 /* Performance Optimizations */
 * {
   scroll-behavior: smooth;
@@ -87,7 +121,7 @@ body {
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif;
     scroll-behavior: smooth;
   }
   
@@ -95,6 +129,7 @@ body {
     @apply bg-slate-50 text-slate-800;
     background: hsl(var(--surface));
     color: hsl(var(--text-primary));
+    font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif;
   }
 }
 

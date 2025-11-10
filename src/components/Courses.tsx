@@ -349,7 +349,7 @@ const Courses = ({ language }: CoursesProps) => {
         <div className="mb-12">
           <h3 className="text-xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
             <Trophy className="text-amber-500" />
-            {language === 'en' ? 'Academic Olympiads' : 'একাডেমিক অলিম্পিয়াড'}
+            {language === 'en' ? 'Olympiad' : 'অলিম্পিয়াড'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {olympiads.map(renderOlympiadItem)}
@@ -359,7 +359,7 @@ const Courses = ({ language }: CoursesProps) => {
         <div>
           <h3 className="text-xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
             <BookOpen className="text-emerald-500" />
-            {language === 'en' ? 'Professional Courses & Certifications' : 'পেশাদার কোর্স এবং সার্টিফিকেশন'}
+            {language === 'en' ? 'Courses' : 'কোর্সসমূহ'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {professionalCourses.map(renderCourseItem)}

@@ -14,7 +14,6 @@ import {
   Linkedin,
   Download,
   Send,
-  Calendar,
   Globe,
   Coffee,
   Github,
@@ -28,9 +27,7 @@ import {
   Zap,
   Brain,
   Loader2,
-  Heart,
   MapPin,
-  ExternalLink,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
