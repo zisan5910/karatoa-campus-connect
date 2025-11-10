@@ -220,8 +220,6 @@ function App() {
 
       {/* Professional Floating Menu */}
       <FloatingMenu 
-        activeSection={activeSection}
-        scrollToSection={scrollToSection}
         language={language}
       />
     </div>

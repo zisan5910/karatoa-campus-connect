@@ -2,32 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
-  User,
-  GraduationCap,
-  Briefcase,
-  Award,
-  Code,
-  Mail,
-  Search,
-  PenTool,
-  Phone,
-  Linkedin,
-  Download,
-  Send,
-  Globe,
-  Coffee,
-  Github,
-  Facebook,
-  Youtube,
-  Twitter,
-  MessageCircle,
-  Chrome,
   Ghost,
   Sparkles,
-  Zap,
-  Brain,
   Loader2,
-  MapPin,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -39,24 +16,11 @@ interface Message {
 }
 
 interface FloatingMenuProps {
-  navigationItems?: Array<{
-    id: string;
-    icon: JSX.Element;
-    target?: string;
-  }>;
-  activeSection?: string;
-  scrollToSection?: (section: string) => void;
   language?: 'en' | 'bn';
-  currentPage?: string;
 }
 
-const FloatingMenu = ({ 
-  activeSection = '', 
-  scrollToSection = () => {}, 
-  language = 'en'
-}: FloatingMenuProps) => {
+const FloatingMenu = ({ language = 'en' }: FloatingMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'nav' | 'chat' | 'social'>('nav');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -100,7 +64,7 @@ const FloatingMenu = ({
     },
   };
 
-  // Enhanced constant replies with more information (LiveChat style)
+  // Enhanced constant replies with more information
   const getConstantReply = (userInput: string): string | null => {
     const lowerInput = userInput.toLowerCase();
 
@@ -415,9 +379,8 @@ const FloatingMenu = ({
     return null;
   };
 
-  // API call function (same as LiveChat)
+  // API call function
   const callAPI = async (prompt: string): Promise<string> => {
-    // Check for constant replies first
     const constantReply = getConstantReply(prompt);
     if (constantReply) {
       return constantReply;
@@ -465,13 +428,11 @@ const FloatingMenu = ({
     setParticleEffect(true);
 
     try {
-      // Simulate AI thinking time based on query complexity
       const thinkingTime = Math.min(Math.max(input.length * 20, 800), 2000);
       await new Promise(resolve => setTimeout(resolve, thinkingTime));
       
       const response = await callAPI(userMessage.content);
       
-      // Typewriter effect for AI response
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: '',
@@ -482,7 +443,6 @@ const FloatingMenu = ({
       setMessages(prev => [...prev, aiMessage]);
       setIsThinking(false);
       
-      // Simulate typing effect
       for (let i = 0; i < response.length; i++) {
         await new Promise(resolve => setTimeout(resolve, 10));
         setMessages(prev => prev.map(msg => 
@@ -513,82 +473,15 @@ const FloatingMenu = ({
   };
 
   useEffect(() => {
-    if (activeTab === 'chat') {
-      scrollToBottom();
-    }
-  }, [messages, activeTab]);
+    scrollToBottom();
+  }, [messages]);
 
-  // Social links data
-  const socialLinks = [
-    {
-      name: 'Google',
-      icon: <Chrome size={20} />,
-      url: 'https://www.google.com/search?q=Md+Ridoan+Mahmud+Zisan',
-      color: 'text-blue-600 hover:text-blue-700',
-      bgColor: 'bg-blue-50 hover:bg-blue-100'
-    },
-    {
-      name: 'LinkedIn',
-      icon: <Linkedin size={20} />,
-      url: 'https://www.linkedin.com/in/ridoan-zisan',
-      color: 'text-blue-600 hover:text-blue-700',
-      bgColor: 'bg-blue-50 hover:bg-blue-100'
-    },
-    {
-      name: 'GitHub',
-      icon: <Github size={20} />,
-      url: 'https://github.com/RidoanDev',
-      color: 'text-gray-800 hover:text-gray-900',
-      bgColor: 'bg-gray-50 hover:bg-gray-100'
-    },
-    {
-      name: 'Facebook',
-      icon: <Facebook size={20} />,
-      url: 'https://www.facebook.com/rid0anzisan',
-      color: 'text-blue-600 hover:text-blue-700',
-      bgColor: 'bg-blue-50 hover:bg-blue-100'
-    },
-    {
-      name: 'YouTube',
-      icon: <Youtube size={20} />,
-      url: 'https://youtube.com/@ridoan-zisan',
-      color: 'text-red-600 hover:text-red-700',
-      bgColor: 'bg-red-50 hover:bg-red-100'
-    },
-    {
-      name: 'Email',
-      icon: <Mail size={20} />,
-      url: 'mailto:ridoan.zisan@gmail.com',
-      color: 'text-green-600 hover:text-green-700',
-      bgColor: 'bg-green-50 hover:bg-green-100'
-    },
-    {
-      name: 'Twitter',
-      icon: <Twitter size={20} />,
-      url: 'https://x.com/ridoan_zisan',
-      color: 'text-sky-600 hover:text-sky-700',
-      bgColor: 'bg-sky-50 hover:bg-sky-100'
-    },
-    {
-      name: 'WhatsApp',
-      icon: <MessageCircle size={20} />,
-      url: 'https://wa.me/8801712525910',
-      color: 'text-green-600 hover:text-green-700',
-      bgColor: 'bg-green-50 hover:bg-green-100'
+  const handleToggleMenu = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 300);
     }
-  ];
-
-  // Quick navigation items
-  const quickNavItems = [
-    { id: 'profile', icon: <User size={16} />, label: language === 'en' ? 'Profile' : 'প্রোফাইল' },
-    { id: 'education', icon: <GraduationCap size={16} />, label: language === 'en' ? 'Education' : 'শিক্ষা' },
-    { id: 'experience', icon: <Briefcase size={16} />, label: language === 'en' ? 'Experience' : 'অভিজ্ঞতা' },
-    { id: 'skills', icon: <Code size={16} />, label: language === 'en' ? 'Skills' : 'দক্ষতা' },
-    { id: 'certificates', icon: <Award size={16} />, label: language === 'en' ? 'Certificates' : 'সার্টিফিকেট' },
-    { id: 'contact', icon: <Mail size={16} />, label: language === 'en' ? 'Contact' : 'যোগাযোগ' },
-    { id: 'research', icon: <Search size={16} />, label: language === 'en' ? 'Research' : 'গবেষণা' },
-    { id: 'blog', icon: <PenTool size={16} />, label: language === 'en' ? 'Blog' : 'ব্লগ' },
-  ];
+  };
 
   // Particle effect component
   const ParticleEffect = () => (
@@ -620,402 +513,163 @@ const FloatingMenu = ({
   );
 
   return (
-    <>
-      {/* Enhanced Floating Trigger Button with pulse effect */}
+    <div className="floating-menu">
+      {/* Ghost AI Chat Button */}
       <motion.button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 group"
-        whileHover={{ scale: 1.15, rotate: 5 }}
-        whileTap={{ scale: 0.85 }}
-        animate={{
-          boxShadow: [
-            "0 0 0 0 rgba(124, 58, 237, 0.7)",
-            "0 0 0 15px rgba(124, 58, 237, 0)",
-            "0 0 0 0 rgba(124, 58, 237, 0)"
-          ]
-        }}
-        transition={{
-          boxShadow: {
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "loop"
-          }
-        }}
-        style={{
-          background: 'linear-gradient(135deg, #7c3aed, #a855f7, #c084fc)',
-          backgroundSize: '200% 200%',
-          color: 'white'
-        }}
+        onClick={handleToggleMenu}
+        className={`fixed bottom-6 right-6 z-[60] p-4 rounded-full shadow-2xl transition-all duration-300 
+          ${isOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-gradient-to-br from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'} 
+          border-2 ${isOpen ? 'border-red-400' : 'border-purple-400'}`}
+        whileHover={{ scale: 1.05, rotate: isOpen ? 90 : 0 }}
+        whileTap={{ scale: 0.95 }}
+        animate={isOpen ? 'hover' : 'float'}
+        variants={ghostVariants}
+        onHoverStart={() => setIsGhostHovering(true)}
+        onHoverEnd={() => setIsGhostHovering(false)}
+        aria-label={isOpen ? (language === 'en' ? 'Close Ghost AI' : 'Ghost AI বন্ধ করুন') : (language === 'en' ? 'Open Ghost AI' : 'Ghost AI খুলুন')}
       >
-        <motion.div
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 5, -5, 0]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            repeatType: "reverse"
-          }}
-        >
-          <Ghost size={24} />
-        </motion.div>
-        <motion.div
-          className="absolute -top-1 -right-1"
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <Sparkles size={12} className="text-yellow-300" />
-        </motion.div>
+        {isOpen ? (
+          <X className="w-6 h-6 text-white" />
+        ) : (
+          <div className="relative">
+            <Ghost className="w-6 h-6 text-white" />
+            {isGhostHovering && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="absolute -top-1 -right-1"
+              >
+                <Sparkles className="w-4 h-4 text-yellow-300" />
+              </motion.div>
+            )}
+          </div>
+        )}
       </motion.button>
 
-      {/* Enhanced Floating Panel with LiveChat size */}
+      {/* Ghost AI Chat Panel */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            {/* Backdrop Blur */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-              onClick={() => setIsOpen(false)}
-            />
-            
-            {/* Main Panel with LiveChat dimensions */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, x: 100, y: 100, rotate: 10 }}
-              animate={{ opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0.8, x: 100, y: 100, rotate: 10 }}
-              transition={{ 
-                type: 'spring', 
-                damping: 25, 
-                stiffness: 300,
-                mass: 0.8
-              }}
-              className="fixed bottom-5 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-lg shadow-xl border border-slate-200 z-50 flex flex-col max-h-[440px]"
-              style={{
-                background: 'linear-gradient(145deg, #ffffff, #f8fafc)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 30px rgba(124, 58, 237, 0.1)'
-              }}
-            >
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-[59]"
+          >
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Ghost className="w-5 h-5 text-white" />
+                  <h3 className="text-white font-semibold">
+                    {language === 'en' ? 'Ghost AI Assistant' : 'Ghost AI সহায়ক'}
+                  </h3>
+                </div>
+                <button
+                  onClick={handleToggleMenu}
+                  className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                  aria-label={language === 'en' ? 'Close' : 'বন্ধ করুন'}
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+              </div>
+            </div>
+
+            {/* Chat Content */}
+            <div className="h-[500px] flex flex-col">
               {particleEffect && <ParticleEffect />}
               
-              {/* Enhanced Header */}
-              <div className="bg-blue-500 text-white p-3 rounded-t-lg flex justify-between items-center">
-                <div className="flex items-center gap-2">
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {messages.length === 0 && (
                   <motion.div
-                    variants={ghostVariants}
-                    animate={isGhostHovering ? 'hover' : 'float'}
-                    onMouseEnter={() => setIsGhostHovering(true)}
-                    onMouseLeave={() => setIsGhostHovering(false)}
+                    className="text-center text-gray-500 py-12"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                   >
-                    <Ghost className="w-5 h-5" />
-                  </motion.div>
-                  <h2 className="font-semibold">Ghost AI</h2>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Enhanced Tab Navigation */}
-                  <div className="flex gap-1">
-                    {[
-                      { id: 'nav', label: language === 'en' ? 'Nav' : 'নেভ', icon: <Globe size={14} /> },
-                      { id: 'chat', label: language === 'en' ? 'Chat' : 'চ্যাট', icon: <Brain size={14} /> },
-                      { id: 'social', label: language === 'en' ? 'Social' : 'সোশ্যাল', icon: <Coffee size={14} /> }
-                    ].map(tab => (
-                      <motion.button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
-                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all ${
-                          activeTab === tab.id
-                            ? 'bg-white/20 text-white'
-                            : 'text-white/70 hover:text-white hover:bg-white/10'
-                        }`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {tab.icon}
-                        <span>{tab.label}</span>
-                      </motion.button>
-                    ))}
-                  </div>
-                  <motion.button
-                    onClick={() => setIsOpen(false)}
-                    className="p-1 hover:bg-white/20 rounded transition-colors"
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <X size={18} />
-                  </motion.button>
-                </div>
-              </div>
-
-              {/* Enhanced Content */}
-              <div className="flex-1 overflow-hidden">
-                {/* Enhanced Navigation Tab */}
-                {activeTab === 'nav' && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="p-3 space-y-3 h-full overflow-y-auto"
-                  >
-                    <h3 className="font-semibold text-slate-800 text-sm mb-2 flex items-center gap-2">
-                      <Sparkles size={14} className="text-purple-500" />
-                      {language === 'en' ? 'Quick Navigation' : 'দ্রুত নেভিগেশন'}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {quickNavItems.map(item => (
-                        <motion.button
-                          key={item.id}
-                          onClick={() => {
-                            scrollToSection(item.id);
-                            setIsOpen(false);
-                          }}
-                          className={`flex items-center gap-1.5 p-2 rounded-lg text-xs transition-all relative overflow-hidden group ${
-                            activeSection === item.id
-                              ? 'bg-purple-100 text-purple-700 border border-purple-200 shadow-md'
-                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700'
-                          }`}
-                          whileHover={{ 
-                            scale: 1.02,
-                            y: -2
-                          }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <div className="flex items-center gap-1.5">
-                            {item.icon}
-                            <span className="font-medium">{item.label}</span>
-                          </div>
-                        </motion.button>
-                      ))}
-                    </div>
-                    
-                    {/* Enhanced Quick Actions */}
-                    <div className="mt-3 space-y-1.5">
-                      <h4 className="font-semibold text-slate-700 text-xs flex items-center gap-1">
-                        <Zap size={12} className="text-yellow-500" />
-                        {language === 'en' ? 'Quick Actions' : 'দ্রুত কর্ম'}
-                      </h4>
-                      <motion.a
-                        href="/Resume.pdf"
-                        download="Md Ridoan Mahmud Zisan.pdf"
-                        className="flex items-center gap-1.5 p-2 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-all duration-300 text-xs border border-green-200 group"
-                        whileHover={{ scale: 1.02, y: -1 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Download size={14} />
-                        <span className="font-medium">{language === 'en' ? 'Download CV' : 'সিভি ডাউনলোড'}</span>
-                      </motion.a>
-                    </div>
+                    <Ghost className="w-16 h-16 mx-auto mb-4 text-purple-400" />
+                    <p className="text-lg font-medium mb-2">
+                      {language === 'en' ? 'Hello!' : 'হ্যালো!'}
+                    </p>
+                    <p className="text-sm">
+                      {language === 'en' 
+                        ? 'Ask me anything about Md Ridoan Mahmud Zisan!'
+                        : 'মো: রিদওয়ান মাহমুদ জিসান সম্পর্কে যেকোনো প্রশ্ন করুন!'}
+                    </p>
                   </motion.div>
                 )}
 
-                {/* Enhanced Chat Tab - LiveChat Style */}
-                {activeTab === 'chat' && (
+                {messages.map((message) => (
                   <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="flex flex-col h-full"
+                    key={message.id}
+                    variants={messageVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px]">
-                      {messages.length === 0 && (
-                        <motion.div
-                          className="text-center text-gray-500 mt-8"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.3 }}
-                        >
-                          <motion.div variants={ghostVariants} animate="float">
-                            <Ghost className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                          </motion.div>
-                          <p className="text-lg">
-                            {language === 'en' ? 'Hello!' : 'হ্যালো!'}
-                          </p>
-                          <p className="text-sm mt-2">
-                            {language === 'en' 
-                              ? 'Ask me about Md Ridoan Mahmud Zisan - his education, skills, projects, or anything else!'
-                              : 'মো: রিদওয়ান মাহমুদ জিসান সম্পর্কে আমাকে জিজ্ঞাসা করুন - তার শিক্ষা, দক্ষতা, প্রকল্প বা অন্য কিছু!'
-                            }
-                          </p>
-                          <div className="mt-4 text-xs text-gray-400">
-                            <p>{language === 'en' ? 'Try asking:' : 'জিজ্ঞাসা করার চেষ্টা করুন:'}</p>
-                            <p>{language === 'en' ? '"What are his skills?"' : '"তার দক্ষতা কি?"'}</p>
-                            <p>{language === 'en' ? '"Tell me about his education"' : '"তার শিক্ষা সম্পর্কে বলুন"'}</p>
-                            <p>{language === 'en' ? '"Show me his projects"' : '"তার প্রকল্প দেখান"'}</p>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {messages.map((message) => (
-                        <motion.div
-                          key={message.id}
-                          className={`flex items-start gap-3 ${
-                            message.role === 'user' ? 'flex-row-reverse' : ''
-                          }`}
-                          variants={messageVariants}
-                          initial="hidden"
-                          animate="visible"
-                        >
-                          <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              message.role === 'user' ? 'bg-blue-500' : 'bg-gray-600'
-                            }`}
-                          >
-                            {message.role === 'user' ? (
-                              <User className="w-5 h-5 text-white" />
-                            ) : (
-                              <Ghost className="w-5 h-5 text-white" />
-                            )}
-                          </div>
-                          <div
-                            className={`rounded-2xl px-4 py-2 max-w-[80%] ${
-                              message.role === 'user'
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}
-                          >
-                            <p className="text-sm whitespace-pre-wrap">
-                              {message.content}
-                            </p>
-                            <p className="text-xs mt-1 opacity-70">
-                              {format(message.timestamp, 'HH:mm')}
-                            </p>
-                          </div>
-                        </motion.div>
-                      ))}
-
-                      {isThinking && (
-                        <motion.div
-                          className="flex items-start gap-3"
-                          variants={messageVariants}
-                          initial="hidden"
-                          animate="visible"
-                        >
-                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                            <Ghost className="w-5 h-5 text-white" />
-                          </div>
-                          <div className="bg-gray-100 rounded-2xl px-4 py-2">
-                            <motion.div
-                              animate={{
-                                rotate: 360,
-                                transition: {
-                                  duration: 1,
-                                  repeat: Infinity,
-                                  ease: 'linear',
-                                },
-                              }}
-                            >
-                              <Loader2 className="w-5 h-5 text-gray-500" />
-                            </motion.div>
-                          </div>
-                        </motion.div>
-                      )}
-                      <div ref={messagesEndRef} />
-                    </div>
-                    
-                    {/* Enhanced Chat Input */}
-                    <div className="border-t p-4">
-                      <form onSubmit={handleChatSubmit} className="flex gap-2">
-                        <input
-                          ref={inputRef}
-                          type="text"
-                          value={input}
-                          onChange={(e) => setInput(e.target.value)}
-                          placeholder={language === 'en' ? 'Ask about Md Ridoan Mahmud Zisan...' : 'মো: রিদওয়ান মাহমুদ জিসান সম্পর্কে জিজ্ঞাসা করুন...'}
-                          disabled={isLoading}
-                          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                        />
-                        <motion.button
-                          type="submit"
-                          disabled={!input.trim() || isLoading}
-                          className="bg-blue-500 text-white rounded-lg px-3 py-2 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                          whileHover={!isLoading && input.trim() ? { scale: 1.05 } : {}}
-                          whileTap={!isLoading && input.trim() ? { scale: 0.95 } : {}}
-                        >
-                          <Send className="w-4 h-4" />
-                        </motion.button>
-                      </form>
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* Enhanced Social Tab */}
-                {activeTab === 'social' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 space-y-4 h-full overflow-y-auto"
-                  >
-                    <h3 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                      <Sparkles size={16} className="text-purple-500" />
-                      {language === 'en' ? 'Social Links' : 'সামাজিক লিঙ্ক'}
-                    </h3>
-                    
-                    <div className="grid grid-cols-2 gap-3">
-                      {socialLinks.map((social, index) => (
-                        <motion.a
-                          key={index}
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`group flex items-center justify-center p-3 rounded-2xl transition-all duration-300 ${social.bgColor} ${social.color} hover:scale-105 border border-slate-200 relative overflow-hidden`}
-                          whileHover={{ 
-                            scale: 1.1,
-                            y: -2
-                          }}
-                          whileTap={{ scale: 0.95 }}
-                          title={social.name}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: index * 0.1 }}
-                        >
-                          {social.icon}
-                        </motion.a>
-                      ))}
-                    </div>
-
-                    {/* Enhanced Contact Info */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="mt-3 p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl border border-slate-200"
+                    <div
+                      className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                        message.role === 'user'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
                     >
-                      <h4 className="font-semibold text-slate-700 mb-2 text-xs flex items-center gap-1">
-                        <Zap size={12} className="text-green-500" />
-                        {language === 'en' ? 'Quick Contact' : 'দ্রুত যোগাযোগ'}
-                      </h4>
-                      <div className="space-y-1.5 text-xs">
-                        <motion.div 
-                          className="flex items-center gap-1.5"
-                          whileHover={{ x: 5 }}
-                        >
-                          <Phone size={12} className="text-green-600" />
-                          <span>+8801712525910</span>
-                        </motion.div>
-                        <motion.div 
-                          className="flex items-center gap-1.5"
-                          whileHover={{ x: 5 }}
-                        >
-                          <Mail size={12} className="text-blue-600" />
-                          <span>ridoan.zisan@gmail.com</span>
-                        </motion.div>
-                        <motion.div 
-                          className="flex items-center gap-1.5"
-                          whileHover={{ x: 5 }}
-                        >
-                          <MapPin size={12} className="text-purple-600" />
-                          <span>{language === 'en' ? 'Bogura, Bangladesh' : 'বগুড়া, বাংলাদেশ'}</span>
-                        </motion.div>
-                      </div>
-                    </motion.div>
+                      <p className="text-sm whitespace-pre-line">{message.content}</p>
+                      <p className="text-xs mt-1 opacity-70">
+                        {format(message.timestamp, 'HH:mm')}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+
+                {isThinking && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex justify-start"
+                  >
+                    <div className="bg-gray-100 rounded-2xl px-4 py-3 flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
+                      <span className="text-sm text-gray-600">
+                        {language === 'en' ? 'Thinking...' : 'চিন্তা করছি...'}
+                      </span>
+                    </div>
                   </motion.div>
                 )}
+
+                <div ref={messagesEndRef} />
               </div>
-            </motion.div>
-          </>
+
+              {/* Input */}
+              <form onSubmit={handleChatSubmit} className="p-4 border-t border-gray-200">
+                <div className="flex gap-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder={language === 'en' ? 'Ask me anything...' : 'যেকোনো প্রশ্ন করুন...'}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <span className="font-medium">{language === 'en' ? 'Send' : 'পাঠান'}</span>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

@@ -129,46 +129,49 @@ const Skills = ({ language }: SkillsProps) => {
     },
   };
 
-  const renderLanguageSkill = (skill: any, index: number) => (
-    <motion.div
-      key={index}
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="group"
-    >
-      <div className="flex justify-between items-center mb-1">
-        <span className="text-gray-700 group-hover:text-gray-900 transition-colors flex items-center gap-1">
-          <ChevronRight size={14} className="text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-          {skill.name[language]}
-        </span>
-        <div className="flex">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <Star
-              key={i}
-              size={16}
-              className={`${
-                i <= skill.level
-                  ? 'text-yellow-500 fill-current'
-                  : 'text-gray-300'
-              }`}
-              aria-hidden="true"
-            />
-          ))}
+  const renderLanguageSkill = (skill: any, index: number) => {
+    const totalStars = skill.level === 5 ? 10 : 8;
+    
+    return (
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.3, delay: index * 0.1 }}
+        className="group"
+      >
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-gray-700 group-hover:text-gray-900 transition-colors flex items-center gap-2 font-medium">
+            <ChevronRight size={14} className="text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+            {skill.name[language]}
+          </span>
+          <div className="flex gap-1">
+            {Array.from({ length: totalStars }).map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.1 + i * 0.05,
+                  type: "spring",
+                  stiffness: 200
+                }}
+              >
+                <Star
+                  size={16}
+                  className="text-yellow-500 fill-yellow-500"
+                  aria-hidden="true"
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${(skill.level / 5) * 100}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: index * 0.2 }}
-          className="bg-gradient-to-r from-yellow-400 to-yellow-600 h-2 rounded-full"
-        />
-      </div>
-    </motion.div>
-  );
+      </motion.div>
+    );
+  };
 
   const renderSkillCard = (skill: any, index: number, section: any) => (
     <motion.div
