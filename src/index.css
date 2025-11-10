@@ -1,0 +1,405 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Performance Optimizations */
+* {
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Smooth scrolling for all sections */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+:root {
+  /* Premium Color Palette for Professional Portfolio */
+  --primary: 220 91% 60%;            /* Royal blue */
+  --primary-dark: 220 91% 45%;       /* Deep royal blue */
+  --primary-light: 220 91% 95%;      /* Very light blue */
+  --secondary: 142 76% 40%;          /* Professional emerald */
+  --secondary-light: 142 76% 90%;    /* Light emerald */
+  --accent: 262 83% 58%;             /* Professional purple */
+  --accent-light: 262 83% 95%;       /* Very light purple */
+  
+  /* Warm Accent Colors */
+  --warm-orange: 25 95% 53%;         /* Vibrant orange */
+  --warm-orange-light: 25 95% 95%;   /* Light orange */
+  --warm-red: 0 84% 60%;             /* Professional red */
+  --warm-red-light: 0 84% 95%;       /* Light red */
+  --warm-pink: 340 82% 52%;          /* Professional pink */
+  --warm-pink-light: 340 82% 95%;    /* Light pink */
+  
+  /* Cool Accent Colors */
+  --cool-cyan: 188 94% 42%;          /* Professional cyan */
+  --cool-cyan-light: 188 94% 95%;    /* Light cyan */
+  --cool-teal: 173 80% 40%;          /* Professional teal */
+  --cool-teal-light: 173 80% 95%;    /* Light teal */
+  --cool-indigo: 231 48% 48%;        /* Professional indigo */
+  --cool-indigo-light: 231 48% 95%;  /* Light indigo */
+  
+  /* Surface & Background Colors */
+  --surface: 220 14% 96%;            /* Very light neutral */
+  --surface-elevated: 0 0% 100%;     /* Pure white */
+  --surface-muted: 220 13% 91%;      /* Subtle gray */
+  
+  /* Text Colors */
+  --text-primary: 220 13% 18%;       /* Rich dark */
+  --text-secondary: 220 9% 46%;      /* Medium gray */
+  --text-muted: 220 9% 64%;          /* Light gray */
+  
+  /* Border Colors */
+  --border: 220 13% 91%;             /* Light border */
+  --border-muted: 220 13% 95%;       /* Very light border */
+  
+  /* Enhanced Professional Gradients */
+  --gradient-blue: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--cool-cyan)));
+  --gradient-emerald: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--cool-teal)));
+  --gradient-purple: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--cool-indigo)));
+  --gradient-orange: linear-gradient(135deg, hsl(var(--warm-orange)), hsl(25 95% 45%));
+  --gradient-red: linear-gradient(135deg, hsl(var(--warm-red)), hsl(var(--warm-pink)));
+  --gradient-surface: linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-elevated)));
+  --gradient-hero: linear-gradient(135deg, hsl(var(--primary-light)), hsl(var(--surface-elevated)));
+  
+  /* Professional Shadows */
+  --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.06);
+  --shadow-dramatic: 0 20px 25px -5px rgb(0 0 0 / 0.12), 0 8px 10px -6px rgb(0 0 0 / 0.08);
+  --shadow-glow: 0 0 0 1px rgb(0 0 0 / 0.05), 0 0 0 3px hsl(var(--primary) / 0.1);
+  
+  /* Smooth Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-slate-50 text-slate-800;
+    background: hsl(var(--surface));
+    color: hsl(var(--text-primary));
+  }
+}
+
+@layer components {
+  /* Premium Section Headers */
+  .section-header {
+    @apply flex items-center gap-4 mb-8;
+  }
+  
+  .section-header-icon {
+    @apply flex-shrink-0 p-3 rounded-xl shadow-lg;
+    background: var(--gradient-blue);
+  }
+  
+  .section-header-icon.emerald {
+    background: var(--gradient-emerald);
+  }
+  
+  .section-header-icon.purple {
+    background: var(--gradient-purple);
+  }
+  
+  .section-header-icon.orange {
+    background: var(--gradient-orange);
+  }
+  
+  .section-header-icon.red {
+    background: var(--gradient-red);
+  }
+  
+  .section-header-title {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold leading-tight;
+    color: hsl(var(--text-primary));
+  }
+  
+  /* Premium Card System */
+  .premium-card {
+    @apply bg-white rounded-xl border border-gray-200 overflow-hidden relative;
+    background: var(--gradient-surface);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-spring);
+  }
+  
+  .premium-card:hover {
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary) / 0.15);
+  }
+  
+  .premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-blue);
+    opacity: 0;
+    transition: var(--transition-smooth);
+  }
+  
+  .premium-card:hover::before {
+    opacity: 1;
+  }
+  
+  .premium-section {
+    @apply py-16 relative overflow-hidden backdrop-blur-sm;
+  }
+  
+  .premium-content {
+    @apply container mx-auto px-4 relative z-10;
+  }
+  
+  /* Enhanced Button System */
+  .btn-primary {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden;
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: var(--transition-smooth);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 rounded-lg font-medium border transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden;
+    background: hsl(var(--surface-elevated));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+  
+  .btn-secondary:hover {
+    background: hsl(var(--primary-light));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-accent {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2;
+    background: var(--gradient-accent);
+    color: white;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  /* Professional Icon Wrapper */
+  .icon-professional {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Professional Input System */
+  .input-professional {
+    @apply w-full px-4 py-3 rounded-lg border transition-all duration-300;
+    border-color: hsl(var(--border));
+    background: white;
+  }
+  
+  .input-professional:focus {
+    outline: none;
+    border-color: hsl(var(--primary-light));
+    box-shadow: 0 0 0 3px hsl(var(--primary-light) / 0.1);
+  }
+  
+  /* Legacy compatibility */
+  .section-card {
+    @apply premium-card;
+  }
+  
+  .premium-title {
+    @apply section-header-title;
+  }
+  
+  .premium-subtitle {
+    @apply text-xl font-semibold mb-6;
+    color: hsl(var(--text-primary));
+  }
+  
+  .icon-wrapper {
+    @apply flex items-center justify-center;
+  }
+}
+
+@layer utilities {
+  /* Professional Glass Effects */
+  .glass-professional {
+    @apply backdrop-blur-xl border;
+    background: rgba(255, 255, 255, 0.95);
+    border-color: hsl(var(--border));
+  }
+  
+  /* Professional Gradient Text */
+  .gradient-text-professional {
+    @apply bg-clip-text text-transparent;
+    background: var(--gradient-primary);
+  }
+  
+  /* Professional Hover Effects */
+  .hover-lift-professional {
+    transition: var(--transition-smooth);
+  }
+  
+  .hover-lift-professional:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  /* Professional Animations */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+  }
+  
+  /* Legacy compatibility */
+  .glass-effect {
+    @apply glass-professional;
+  }
+  
+  .gradient-text {
+    @apply gradient-text-professional;
+  }
+  
+  .hover-lift {
+    @apply hover-lift-professional;
+  }
+  
+  .smooth-transition {
+    transition: var(--transition-smooth);
+  }
+  
+  .fade-in {
+    @apply animate-fade-in-up;
+  }
+  
+  .slide-up {
+    @apply animate-fade-in-up;
+  }
+}
+
+/* Professional Keyframes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px hsl(var(--primary-light) / 0.4);
+  }
+  to {
+    box-shadow: 0 0 30px hsl(var(--primary-light) / 0.6);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary-light) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary-light) / 0.6);
+  }
+}
+
+/* Responsive optimizations */
+@media (max-width: 768px) {
+  .premium-card {
+    @apply p-4;
+  }
+  
+  .premium-section {
+    @apply p-4;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
