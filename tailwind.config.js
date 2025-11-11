@@ -26,6 +26,16 @@ export default {
           success: '#10B981',
           warning: '#F59E0B',
           danger: '#EF4444',
+        },
+        section: {
+          profile: 'hsl(220 91% 60%)',
+          education: 'hsl(142 76% 40%)',
+          courses: 'hsl(262 83% 58%)',
+          experience: 'hsl(25 95% 53%)',
+          certificates: 'hsl(188 94% 42%)',
+          skills: 'hsl(340 82% 52%)',
+          family: 'hsl(0 84% 60%)',
+          contact: 'hsl(220 91% 60%)',
         }
       },
       animation: {

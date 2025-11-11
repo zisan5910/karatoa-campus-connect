@@ -41,17 +41,17 @@ const Navigation = ({
 
   const getIconColor = (id: string): string => {
     const colors: Record<string, string> = {
-      profile: 'text-indigo-500',
-      education: 'text-blue-500',
-      courses: 'text-emerald-500',
-      experience: 'text-amber-500',
-      certificates: 'text-red-500',
-      skills: 'text-purple-500',
-      family: 'text-pink-500',
-      contact: 'text-cyan-500',
-      research: 'text-blue-600',
-      blog: 'text-purple-600',
-      'social-links': 'text-teal-500',
+      profile: 'text-[hsl(var(--section-profile))]',
+      education: 'text-[hsl(var(--section-education))]',
+      courses: 'text-[hsl(var(--section-courses))]',
+      experience: 'text-[hsl(var(--section-experience))]',
+      certificates: 'text-[hsl(var(--section-certificates))]',
+      skills: 'text-[hsl(var(--section-skills))]',
+      family: 'text-[hsl(var(--section-family))]',
+      contact: 'text-[hsl(var(--section-contact))]',
+      research: 'text-[hsl(var(--primary))]',
+      blog: 'text-[hsl(var(--accent))]',
+      'social-links': 'text-[hsl(var(--cool-teal))]',
     };
     return colors[id] || 'text-gray-500';
   };

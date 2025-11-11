@@ -83,6 +83,16 @@ body {
   --cool-indigo: 231 48% 48%;        /* Professional indigo */
   --cool-indigo-light: 231 48% 95%;  /* Light indigo */
   
+  /* Section-Specific Theme Colors */
+  --section-profile: 220 91% 60%;         /* Blue for Profile */
+  --section-education: 142 76% 40%;       /* Emerald for Education */
+  --section-courses: 262 83% 58%;         /* Purple for Courses */
+  --section-experience: 25 95% 53%;       /* Orange for Experience */
+  --section-certificates: 188 94% 42%;    /* Cyan for Certificates */
+  --section-skills: 340 82% 52%;          /* Pink for Skills */
+  --section-family: 0 84% 60%;            /* Red for Family */
+  --section-contact: 220 91% 60%;         /* Blue for Contact */
+  
   /* Surface & Background Colors */
   --surface: 220 14% 96%;            /* Very light neutral */
   --surface-elevated: 0 0% 100%;     /* Pure white */

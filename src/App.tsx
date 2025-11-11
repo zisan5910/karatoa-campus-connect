@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import Family from './components/Family';
 import Navigation from './components/Navigation';
 import Profile from './components/Profile';
+import Signature from './components/Signature';
 import Skills from './components/Skills';
 
 // Import pages
@@ -193,6 +194,9 @@ function App() {
               </Element>
             </main>
 
+            {/* Signature Section */}
+            <Signature />
+
             {/* Footer */}
             <Element name="footer">
               <Footer language={language} />
@@ -219,9 +223,7 @@ function App() {
       {renderCurrentPage()}
 
       {/* Professional Floating Menu */}
-      <FloatingMenu 
-        language={language}
-      />
+      <FloatingMenu />
     </div>
   );
 }

@@ -22,24 +22,25 @@ interface CoursesProps {
 }
 
 // Premium Section Layout  
-const PremiumSection = ({ children, title, icon, theme = 'cyan', className = '' }: {
+const PremiumSection = ({ children, title, icon, theme = 'courses', className = '' }: {
   children: React.ReactNode;
   title: string;
   icon: React.ReactNode;
-  theme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'red' | 'cyan' | 'pink';
+  theme?: 'profile' | 'education' | 'courses' | 'experience' | 'certificates' | 'skills' | 'family' | 'contact';
   className?: string;
 }) => {
   const getBackgroundGradient = (theme: string) => {
     const gradients = {
-      blue: 'from-blue-50/20 via-white to-cyan-50/20',
-      emerald: 'from-emerald-50/20 via-white to-teal-50/20',
-      purple: 'from-purple-50/20 via-white to-indigo-50/20', 
-      orange: 'from-orange-50/20 via-white to-amber-50/20',
-      red: 'from-red-50/20 via-white to-pink-50/20',
-      cyan: 'from-cyan-50/20 via-white to-blue-50/20',
-      pink: 'from-pink-50/20 via-white to-rose-50/20'
+      profile: 'from-blue-50/20 via-white to-cyan-50/20',
+      education: 'from-emerald-50/20 via-white to-teal-50/20',
+      courses: 'from-purple-50/20 via-white to-indigo-50/20', 
+      experience: 'from-orange-50/20 via-white to-amber-50/20',
+      certificates: 'from-cyan-50/20 via-white to-blue-50/20',
+      skills: 'from-pink-50/20 via-white to-rose-50/20',
+      family: 'from-red-50/20 via-white to-pink-50/20',
+      contact: 'from-blue-50/20 via-white to-cyan-50/20'
     };
-    return gradients[theme as keyof typeof gradients] || gradients.cyan;
+    return gradients[theme as keyof typeof gradients] || gradients.courses;
   };
 
   return (
@@ -343,7 +344,7 @@ const Courses = ({ language }: CoursesProps) => {
       <PremiumSection
         title={language === 'en' ? 'Professional Development' : 'পেশাদার উন্নয়ন'}
         icon={<BookOpen className="text-white" size={24} />}
-        theme="cyan"
+        theme="courses"
       >
 
         <div className="mb-12">

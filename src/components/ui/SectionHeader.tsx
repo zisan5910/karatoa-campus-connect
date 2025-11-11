@@ -5,7 +5,7 @@ interface SectionHeaderProps {
   icon: React.ReactNode;
   title: string;
   subtitle?: string;
-  theme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'red' | 'cyan' | 'pink';
+  theme?: 'profile' | 'education' | 'courses' | 'experience' | 'certificates' | 'skills' | 'family' | 'contact';
   className?: string;
 }
 
@@ -13,20 +13,21 @@ const SectionHeader = ({
   icon, 
   title, 
   subtitle, 
-  theme = 'blue', 
+  theme = 'profile', 
   className = '' 
 }: SectionHeaderProps) => {
   const getThemeStyles = (theme: string) => {
     const themes = {
-      blue: 'from-blue-500 to-cyan-600',
-      emerald: 'from-emerald-500 to-teal-600', 
-      purple: 'from-purple-500 to-indigo-600',
-      orange: 'from-orange-500 to-amber-600',
-      red: 'from-red-500 to-pink-600',
-      cyan: 'from-cyan-500 to-blue-600',
-      pink: 'from-pink-500 to-rose-600'
+      profile: 'bg-[hsl(var(--section-profile))]',
+      education: 'bg-[hsl(var(--section-education))]',
+      courses: 'bg-[hsl(var(--section-courses))]',
+      experience: 'bg-[hsl(var(--section-experience))]',
+      certificates: 'bg-[hsl(var(--section-certificates))]',
+      skills: 'bg-[hsl(var(--section-skills))]',
+      family: 'bg-[hsl(var(--section-family))]',
+      contact: 'bg-[hsl(var(--section-contact))]',
     };
-    return themes[theme as keyof typeof themes] || themes.blue;
+    return themes[theme as keyof typeof themes] || themes.profile;
   };
 
   return (
@@ -37,9 +38,9 @@ const SectionHeader = ({
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       className={`flex items-center gap-4 mb-8 ${className}`}
     >
-      {/* Gradient Icon Container */}
+      {/* Solid Color Icon Container */}
       <motion.div
-        className={`flex-shrink-0 p-3 rounded-xl shadow-lg bg-gradient-to-br ${getThemeStyles(theme)}`}
+        className={`flex-shrink-0 p-3 rounded-xl shadow-lg ${getThemeStyles(theme)}`}
         whileHover={{ scale: 1.05, rotate: 2 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
