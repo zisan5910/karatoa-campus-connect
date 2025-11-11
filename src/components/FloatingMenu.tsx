@@ -2,13 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Send,
   Ghost,
-  User,
-  Loader2,
   X,
-  Mail,
+  MessageCircle,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
   id: string;
@@ -22,8 +20,8 @@ export const LiveChat = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isGhostHovering, setIsGhostHovering] = useState(false);
+  const [typingText, setTypingText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -303,19 +301,15 @@ export const LiveChat = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  // Typing animation effect
+  const typeMessage = async (text: string) => {
+    setTypingText('');
+    for (let i = 0; i < text.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 20));
+      setTypingText(text.substring(0, i + 1));
+    }
+    return text;
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -367,13 +361,18 @@ export const LiveChat = () => {
 
     try {
       const response = await callAPI(userMessage.content);
+      
+      // Show typing animation
+      const typedResponse = await typeMessage(response);
+      
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: response,
+        content: typedResponse,
         role: 'assistant',
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiMessage]);
+      setTypingText('');
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -383,24 +382,11 @@ export const LiveChat = () => {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
+      setTypingText('');
     } finally {
       setIsLoading(false);
       inputRef.current?.focus();
     }
-  };
-
-  const handleEmailClick = () => {
-    const isMobile =
-      /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-    isMobile
-      ? (window.location.href = 'mailto:ridoan.zisan@gmail.com')
-      : window.open(
-          'https://mail.google.com/mail/?view=cm&fs=1&to=ridoan.zisan@gmail.com',
-          '_blank'
-        );
-    setIsMenuOpen(false);
   };
 
   return (
@@ -408,212 +394,183 @@ export const LiveChat = () => {
       className="fixed bottom-6 right-6 flex flex-col items-end gap-2 z-[9999]"
       ref={containerRef}
     >
-      {/* Email Button - Animated */}
-      {isMenuOpen && (
-        <>
-          <motion.a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handleEmailClick();
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            className="bg-green-500 text-white p-4 rounded-full shadow-md hover:bg-green-600 transition-colors"
-            title="Send Email"
-          >
-            <Mail size={24} />
-          </motion.a>
-          <motion.button
-            onClick={() => {
-              setIsChatOpen(true);
-              setIsMenuOpen(false);
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            className="bg-blue-500 text-white p-4 rounded-full shadow-md hover:bg-blue-600 transition-colors"
-            title="Open Chat"
-          >
-            <Ghost size={24} />
-          </motion.button>
-        </>
-      )}
-
-      {/* Main Floating Button - Smart Toggle */}
+      {/* Main Floating Button - Chat Icon */}
       <motion.button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        onClick={() => setIsChatOpen(!isChatOpen)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className={`p-4 rounded-full shadow-md ${
-          isMenuOpen
-            ? 'bg-red-500 hover:bg-red-600'
-            : 'bg-blue-500 hover:bg-blue-600'
-        } text-white transition-colors`}
-        title={isMenuOpen ? 'Close menu' : 'Open menu'}
+        className="p-3 sm:p-4 rounded-full shadow-lg bg-purple-50 hover:bg-purple-100 border border-purple-200 hover:border-purple-300 text-purple-600 hover:text-purple-700 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-200"
+        title={isChatOpen ? 'Close chat' : 'Open Ghost AI chat'}
       >
-        <motion.div
-          animate={{ rotate: isMenuOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Mail size={24} />
-        </motion.div>
+        <MessageCircle size={24} className="sm:w-6 sm:h-6" />
       </motion.button>
 
       {/* Chat Window */}
-      {isChatOpen && (
-        <motion.div
-          className="fixed bottom-5 right-6 w-100 max-w-[calc(101vw-3rem)] bg-white rounded-lg shadow-xl z-[9999] flex flex-col max-h-[440px]"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        >
-          {/* Chat Header */}
-          <div className="bg-blue-500 text-white p-2 rounded-t-lg flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <motion.div
-                variants={ghostVariants}
-                animate={isGhostHovering ? 'hover' : 'float'}
-                onMouseEnter={() => setIsGhostHovering(true)}
-                onMouseLeave={() => setIsGhostHovering(false)}
-              >
-                <Ghost className="w-5 h-5" />
-              </motion.div>
-              <h2 className="font-semibold">Ghost</h2>
-            </div>
-            <button
-              onClick={() => setIsChatOpen(false)}
-              className="text-white/80 hover:text-white transition-colors"
-              aria-label="Close chat"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px]">
-            {messages.length === 0 && (
-              <motion.div
-                className="text-center text-gray-500 mt-8"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <motion.div variants={ghostVariants} animate="float">
-                  <Ghost className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+      <AnimatePresence>
+        {isChatOpen && (
+          <motion.div
+            className="fixed bottom-20 right-6 w-[350px] sm:w-[400px] max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl z-[9999] flex flex-col max-h-[500px] border border-purple-100"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          >
+            {/* Chat Header */}
+            <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <motion.div
+                  variants={ghostVariants}
+                  animate={isGhostHovering ? 'hover' : 'float'}
+                  onMouseEnter={() => setIsGhostHovering(true)}
+                  onMouseLeave={() => setIsGhostHovering(false)}
+                  className="bg-white/20 p-2 rounded-full"
+                >
+                  <Ghost className="w-5 h-5" />
                 </motion.div>
-                <p className="text-lg">Hello!</p>
-                <p className="text-sm mt-2">
-                  Ask me about Md Ridoan Mahmud Zisan - his education, skills,
-                  projects, or anything else!
-                </p>
-                <div className="mt-4 text-xs text-gray-400">
-                  <p>Try asking:</p>
-                  <p>"What are his skills?"</p>
-                  <p>"Tell me about his education"</p>
-                  <p>"Show me his projects"</p>
-                </div>
-              </motion.div>
-            )}
-
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                className={`flex items-start gap-3 ${
-                  message.role === 'user' ? 'flex-row-reverse' : ''
-                }`}
-                variants={messageVariants}
-                initial="hidden"
-                animate="visible"
+                <h2 className="font-semibold text-lg" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>Ghost AI</h2>
+              </div>
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/20 rounded-full"
+                aria-label="Close chat"
               >
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    message.role === 'user' ? 'bg-blue-500' : 'bg-gray-600'
-                  }`}
-                >
-                  {message.role === 'user' ? (
-                    <User className="w-5 h-5 text-white" />
-                  ) : (
-                    <Ghost className="w-5 h-5 text-white" />
-                  )}
-                </div>
-                <div
-                  className={`rounded-2xl px-4 py-2 max-w-[80%] ${
-                    message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">
-                    {message.content}
-                  </p>
-                  <p className="text-xs mt-1 opacity-70">
-                    {format(message.timestamp, 'HH:mm')}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                <X size={20} />
+              </button>
+            </div>
 
-            {isLoading && (
-              <motion.div
-                className="flex items-start gap-3"
-                variants={messageVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                  <Ghost className="w-5 h-5 text-white" />
-                </div>
-                <div className="bg-gray-100 rounded-2xl px-4 py-2">
-                  <motion.div
-                    animate={{
-                      rotate: 360,
-                      transition: {
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: 'linear',
-                      },
-                    }}
-                  >
-                    <Loader2 className="w-5 h-5 text-gray-500" />
+            {/* Messages Container */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[300px] max-h-[350px] bg-gradient-to-b from-purple-50/30 to-white">
+              {messages.length === 0 && (
+                <motion.div
+                  className="text-center text-gray-600 mt-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  style={{ fontFamily: "'Poppins', 'Inter', 'Noto Sans Bengali', sans-serif" }}
+                >
+                  <motion.div variants={ghostVariants} animate="float" className="mb-4">
+                    <div className="inline-block p-4 bg-purple-100 rounded-full">
+                      <Ghost className="w-12 h-12 text-purple-600" />
+                    </div>
                   </motion.div>
-                </div>
-              </motion.div>
-            )}
+                  <p className="text-lg font-semibold text-gray-800 mb-2">Hello! 👋</p>
+                  <p className="text-sm text-gray-600 mb-4 px-4">
+                    Ask me about Md Ridoan Mahmud Zisan - his education, skills,
+                    projects, or anything else!
+                  </p>
+                  <div className="mt-4 text-xs text-gray-500 space-y-1 px-4">
+                    <p className="font-medium text-purple-600">Try asking:</p>
+                    <p className="bg-white rounded-lg p-2 shadow-sm">"What are his skills?"</p>
+                    <p className="bg-white rounded-lg p-2 shadow-sm">"Tell me about his education"</p>
+                    <p className="bg-white rounded-lg p-2 shadow-sm">"Show me his projects"</p>
+                  </div>
+                </motion.div>
+              )}
 
-            <div ref={messagesEndRef} />
-          </div>
+              {messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  className={`flex items-start gap-2 ${
+                    message.role === 'user' ? 'flex-row-reverse' : ''
+                  }`}
+                  variants={messageVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      message.role === 'user' 
+                        ? 'bg-gradient-to-br from-purple-500 to-purple-600' 
+                        : 'bg-gradient-to-br from-purple-400 to-purple-500'
+                    }`}
+                  >
+                    <Ghost className="w-4 h-4 text-white" />
+                  </div>
+                  <div
+                    className={`rounded-2xl px-3 py-2 max-w-[75%] shadow-sm ${
+                      message.role === 'user'
+                        ? 'bg-gradient-to-br from-purple-500 to-purple-600 text-white'
+                        : 'bg-white text-gray-800 border border-gray-100'
+                    }`}
+                    style={{ fontFamily: "'Poppins', 'Inter', 'Noto Sans Bengali', sans-serif" }}
+                  >
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                      {message.content}
+                    </p>
+                    <p className={`text-xs mt-1 ${message.role === 'user' ? 'text-purple-100' : 'text-gray-500'}`}>
+                      {format(message.timestamp, 'HH:mm')}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
 
-          {/* Input Form */}
-          <div className="border-t p-4">
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about Md Ridoan Mahmud Zisan..."
-                disabled={isLoading}
-                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-              <motion.button
-                type="submit"
-                disabled={!input.trim() || isLoading}
-                className="bg-blue-500 text-white rounded-lg px-3 py-2 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                whileHover={!isLoading && input.trim() ? { scale: 1.05 } : {}}
-                whileTap={!isLoading && input.trim() ? { scale: 0.95 } : {}}
-              >
-                <Send className="w-4 h-4" />
-                <span className="sr-only">Send</span>
-              </motion.button>
-            </form>
-          </div>
-        </motion.div>
-      )}
+              {(isLoading || typingText) && (
+                <motion.div
+                  className="flex items-start gap-2"
+                  variants={messageVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                    <Ghost className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="bg-white rounded-2xl px-3 py-2 shadow-sm border border-gray-100" style={{ fontFamily: "'Poppins', 'Inter', 'Noto Sans Bengali', sans-serif" }}>
+                    {typingText ? (
+                      <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{typingText}<span className="animate-pulse">|</span></p>
+                    ) : (
+                      <div className="flex gap-1">
+                        <motion.div
+                          className="w-2 h-2 bg-purple-500 rounded-full"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-purple-500 rounded-full"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-purple-500 rounded-full"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Form */}
+            <div className="border-t border-purple-100 p-4 bg-white rounded-b-2xl">
+              <form onSubmit={handleSubmit} className="flex gap-2">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask about Md Ridoan Mahmud Zisan..."
+                  disabled={isLoading || !!typingText}
+                  className="flex-1 rounded-full border border-purple-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  style={{ fontFamily: "'Poppins', 'Inter', 'Noto Sans Bengali', sans-serif" }}
+                />
+                <motion.button
+                  type="submit"
+                  disabled={!input.trim() || isLoading || !!typingText}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-full p-2 hover:from-purple-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md"
+                  whileHover={!isLoading && input.trim() && !typingText ? { scale: 1.05 } : {}}
+                  whileTap={!isLoading && input.trim() && !typingText ? { scale: 0.95 } : {}}
+                >
+                  <Send className="w-4 h-4" />
+                  <span className="sr-only">Send</span>
+                </motion.button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

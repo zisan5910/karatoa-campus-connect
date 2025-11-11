@@ -153,7 +153,7 @@ const Navigation = ({
           <button
             onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
             className={cn(
-              'p-2 rounded-lg transition-all duration-150',
+              'p-2 rounded-full transition-all duration-150',
               'text-purple-600 hover:text-purple-700',
               'border border-purple-200 hover:border-purple-300',
               'focus:outline-none focus:ring-2 focus:ring-purple-200',
