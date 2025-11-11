@@ -2,10 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Send,
   Ghost,
-  User,
-  Loader2,
   X,
-  Mail,
+  MessageCircle,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
@@ -22,8 +20,8 @@ export const LiveChat = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isGhostHovering, setIsGhostHovering] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -304,18 +302,13 @@ export const LiveChat = () => {
   }, [messages, isLoading]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (isChatOpen && showWelcome) {
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isChatOpen, showWelcome]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -389,105 +382,54 @@ export const LiveChat = () => {
     }
   };
 
-  const handleEmailClick = () => {
-    const isMobile =
-      /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-    isMobile
-      ? (window.location.href = 'mailto:ridoan.zisan@gmail.com')
-      : window.open(
-          'https://mail.google.com/mail/?view=cm&fs=1&to=ridoan.zisan@gmail.com',
-          '_blank'
-        );
-    setIsMenuOpen(false);
-  };
 
   return (
     <div
       className="fixed bottom-6 right-6 flex flex-col items-end gap-2 z-[9999]"
       ref={containerRef}
     >
-      {/* Email Button - Animated */}
-      {isMenuOpen && (
-        <>
-          <motion.a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handleEmailClick();
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            className="bg-green-500 text-white p-4 rounded-full shadow-md hover:bg-green-600 transition-colors"
-            title="Send Email"
-          >
-            <Mail size={24} />
-          </motion.a>
-          <motion.button
-            onClick={() => {
-              setIsChatOpen(true);
-              setIsMenuOpen(false);
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            className="bg-blue-500 text-white p-4 rounded-full shadow-md hover:bg-blue-600 transition-colors"
-            title="Open Chat"
-          >
-            <Ghost size={24} />
-          </motion.button>
-        </>
-      )}
-
-      {/* Main Floating Button - Smart Toggle */}
-      <motion.button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        className={`p-4 rounded-full shadow-md ${
-          isMenuOpen
-            ? 'bg-red-500 hover:bg-red-600'
-            : 'bg-blue-500 hover:bg-blue-600'
-        } text-white transition-colors`}
-        title={isMenuOpen ? 'Close menu' : 'Open menu'}
-      >
-        <motion.div
-          animate={{ rotate: isMenuOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
+      {/* Main Floating Chat Button */}
+      {!isChatOpen && (
+        <motion.button
+          onClick={() => setIsChatOpen(true)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="p-4 rounded-lg shadow-lg transition-all duration-200 text-purple-600 hover:text-purple-700 border border-purple-200 hover:border-purple-300 bg-purple-50 hover:bg-purple-100"
+          title="Open Ghost AI Chat"
         >
-          <Mail size={24} />
-        </motion.div>
-      </motion.button>
+          <MessageCircle size={24} />
+        </motion.button>
+      )}
 
       {/* Chat Window */}
       {isChatOpen && (
         <motion.div
-          className="fixed bottom-5 right-6 w-100 max-w-[calc(101vw-3rem)] bg-white rounded-lg shadow-xl z-[9999] flex flex-col max-h-[440px]"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          className="fixed bottom-5 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-xl shadow-2xl z-[9999] flex flex-col max-h-[500px] border border-purple-100"
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         >
           {/* Chat Header */}
-          <div className="bg-blue-500 text-white p-2 rounded-t-lg flex justify-between items-center">
-            <div className="flex items-center gap-2">
+          <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-3 rounded-t-xl flex justify-between items-center shadow-md">
+            <div className="flex items-center gap-3">
               <motion.div
                 variants={ghostVariants}
                 animate={isGhostHovering ? 'hover' : 'float'}
                 onMouseEnter={() => setIsGhostHovering(true)}
                 onMouseLeave={() => setIsGhostHovering(false)}
+                className="bg-white/20 rounded-full p-1.5"
               >
                 <Ghost className="w-5 h-5" />
               </motion.div>
-              <h2 className="font-semibold">Ghost</h2>
+              <h2 className="font-semibold text-lg">Ghost AI</h2>
             </div>
             <button
-              onClick={() => setIsChatOpen(false)}
-              className="text-white/80 hover:text-white transition-colors"
+              onClick={() => {
+                setIsChatOpen(false);
+                setShowWelcome(true);
+              }}
+              className="text-white/80 hover:text-white transition-colors hover:bg-white/10 rounded-lg p-1"
               aria-label="Close chat"
             >
               <X size={20} />
@@ -495,35 +437,58 @@ export const LiveChat = () => {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px]">
-            {messages.length === 0 && (
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[320px] max-h-[360px] bg-gradient-to-b from-purple-50/30 to-white">
+            {messages.length === 0 && showWelcome && (
               <motion.div
-                className="text-center text-gray-500 mt-8"
+                className="text-center text-gray-600 mt-8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.2 }}
               >
-                <motion.div variants={ghostVariants} animate="float">
-                  <Ghost className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <motion.div variants={ghostVariants} animate="float" className="mb-4">
+                  <Ghost className="w-16 h-16 mx-auto text-purple-400" />
                 </motion.div>
-                <p className="text-lg">Hello!</p>
-                <p className="text-sm mt-2">
-                  Ask me about Md Ridoan Mahmud Zisan - his education, skills,
-                  projects, or anything else!
-                </p>
-                <div className="mt-4 text-xs text-gray-400">
-                  <p>Try asking:</p>
-                  <p>"What are his skills?"</p>
-                  <p>"Tell me about his education"</p>
-                  <p>"Show me his projects"</p>
-                </div>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <p className="text-lg font-semibold text-purple-700 mb-2">
+                    Welcome to Ghost AI! 👋
+                  </p>
+                  <p className="text-sm text-gray-600 px-4">
+                    I'm here to help you learn about Md Ridoan Mahmud Zisan - his education, skills, projects, and more!
+                  </p>
+                </motion.div>
+                <motion.div 
+                  className="mt-6 text-xs text-gray-500 space-y-1.5 px-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  <p className="font-medium text-purple-600 mb-2">Try asking:</p>
+                  <p className="bg-purple-50 rounded-lg py-1.5 px-3">"What are his skills?"</p>
+                  <p className="bg-purple-50 rounded-lg py-1.5 px-3">"Tell me about his education"</p>
+                  <p className="bg-purple-50 rounded-lg py-1.5 px-3">"Show me his projects"</p>
+                </motion.div>
+              </motion.div>
+            )}
+            
+            {messages.length === 0 && !showWelcome && (
+              <motion.div
+                className="text-center text-gray-500 mt-12"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <Ghost className="w-12 h-12 mx-auto mb-3 text-purple-300" />
+                <p className="text-sm text-gray-600">Start a conversation...</p>
               </motion.div>
             )}
 
             {messages.map((message) => (
               <motion.div
                 key={message.id}
-                className={`flex items-start gap-3 ${
+                className={`flex items-start gap-2.5 ${
                   message.role === 'user' ? 'flex-row-reverse' : ''
                 }`}
                 variants={messageVariants}
@@ -531,27 +496,27 @@ export const LiveChat = () => {
                 animate="visible"
               >
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    message.role === 'user' ? 'bg-blue-500' : 'bg-gray-600'
+                  className={`w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center shadow-md ${
+                    message.role === 'user' 
+                      ? 'bg-gradient-to-br from-purple-500 to-purple-600' 
+                      : 'bg-gradient-to-br from-gray-600 to-gray-700'
                   }`}
                 >
-                  {message.role === 'user' ? (
-                    <User className="w-5 h-5 text-white" />
-                  ) : (
-                    <Ghost className="w-5 h-5 text-white" />
-                  )}
+                  <Ghost className="w-4 h-4 text-white" />
                 </div>
                 <div
-                  className={`rounded-2xl px-4 py-2 max-w-[80%] ${
+                  className={`rounded-2xl px-4 py-2.5 max-w-[75%] shadow-sm ${
                     message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-gradient-to-br from-purple-500 to-purple-600 text-white'
+                      : 'bg-white text-gray-800 border border-gray-200'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {message.content}
                   </p>
-                  <p className="text-xs mt-1 opacity-70">
+                  <p className={`text-xs mt-1.5 ${
+                    message.role === 'user' ? 'text-purple-100' : 'text-gray-500'
+                  }`}>
                     {format(message.timestamp, 'HH:mm')}
                   </p>
                 </div>
@@ -560,27 +525,55 @@ export const LiveChat = () => {
 
             {isLoading && (
               <motion.div
-                className="flex items-start gap-3"
+                className="flex items-start gap-2.5"
                 variants={messageVariants}
                 initial="hidden"
                 animate="visible"
               >
-                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                  <Ghost className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 flex-shrink-0 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center shadow-md">
+                  <Ghost className="w-4 h-4 text-white" />
                 </div>
-                <div className="bg-gray-100 rounded-2xl px-4 py-2">
-                  <motion.div
-                    animate={{
-                      rotate: 360,
-                      transition: {
+                <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
+                  <div className="flex gap-1.5">
+                    <motion.div
+                      className="w-2 h-2 bg-purple-400 rounded-full"
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.5, 1, 0.5],
+                      }}
+                      transition={{
                         duration: 1,
                         repeat: Infinity,
-                        ease: 'linear',
-                      },
-                    }}
-                  >
-                    <Loader2 className="w-5 h-5 text-gray-500" />
-                  </motion.div>
+                        ease: 'easeInOut',
+                      }}
+                    />
+                    <motion.div
+                      className="w-2 h-2 bg-purple-400 rounded-full"
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.5, 1, 0.5],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: 0.2,
+                      }}
+                    />
+                    <motion.div
+                      className="w-2 h-2 bg-purple-400 rounded-full"
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.5, 1, 0.5],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: 0.4,
+                      }}
+                    />
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -589,26 +582,25 @@ export const LiveChat = () => {
           </div>
 
           {/* Input Form */}
-          <div className="border-t p-4">
+          <div className="border-t border-purple-100 p-3 bg-white rounded-b-xl">
             <form onSubmit={handleSubmit} className="flex gap-2">
               <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about Md Ridoan Mahmud Zisan..."
+                placeholder="Ask me anything..."
                 disabled={isLoading}
-                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 rounded-lg border border-purple-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed bg-white placeholder:text-gray-400"
               />
               <motion.button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="bg-blue-500 text-white rounded-lg px-3 py-2 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg px-4 py-2.5 hover:from-purple-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
                 whileHover={!isLoading && input.trim() ? { scale: 1.05 } : {}}
                 whileTap={!isLoading && input.trim() ? { scale: 0.95 } : {}}
               >
                 <Send className="w-4 h-4" />
-                <span className="sr-only">Send</span>
               </motion.button>
             </form>
           </div>
