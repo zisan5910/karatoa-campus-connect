@@ -38,13 +38,13 @@ const SectionHeader = ({
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       className={`flex items-center gap-4 mb-8 ${className}`}
     >
-      {/* Large Round Icon Container - Olympiad Style */}
+      {/* Solid Color Icon Container */}
       <motion.div
-        className={`flex-shrink-0 p-5 rounded-full shadow-2xl ${getThemeStyles(theme)}`}
-        whileHover={{ scale: 1.1, rotate: 5 }}
-        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+        className={`flex-shrink-0 p-3 rounded-xl shadow-lg ${getThemeStyles(theme)}`}
+        whileHover={{ scale: 1.05, rotate: 2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        <div className="text-white flex items-center justify-center">
+        <div className="text-white">
           {icon}
         </div>
       </motion.div>

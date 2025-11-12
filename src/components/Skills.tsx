@@ -143,8 +143,8 @@ const Skills = ({ language }: SkillsProps) => {
         className="group"
       >
         <div className="flex justify-between items-center mb-3">
-          <span className="text-gray-700 group-hover:text-gray-900 transition-colors flex items-center gap-2">
-            <ChevronRight size={14} className="text-pink-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <span className="text-gray-700 group-hover:text-gray-900 transition-colors flex items-center gap-2 font-medium">
+            <ChevronRight size={14} className="text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
             {skill.name[language]}
           </span>
           <div className="flex gap-1">
@@ -184,7 +184,7 @@ const Skills = ({ language }: SkillsProps) => {
       className={`${section.color} ${section.hoverColor} p-3 rounded-lg hover:shadow-md transition-all duration-300 flex items-center gap-2`}
     >
       <ChevronRight size={14} className={`${section.iconColor} opacity-70`} />
-      <span className="text-gray-700">{skill[language]}</span>
+      {skill[language]}
     </motion.div>
   );
 
@@ -204,9 +204,9 @@ const Skills = ({ language }: SkillsProps) => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h3 className="font-bold text-xl flex items-center gap-3 mb-6 text-gray-800">
-              <div className="p-2 bg-pink-100 rounded-lg">
-                <Languages size={20} className="text-pink-600" />
+            <h3 className="font-bold text-lg flex items-center gap-3 mb-4 text-gray-700">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Languages size={20} className="text-blue-600" />
               </div>
               {skillsData.languages.title[language]}
             </h3>
@@ -228,7 +228,7 @@ const Skills = ({ language }: SkillsProps) => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: sectionIndex * 0.1 }}
             >
-              <h3 className="font-bold text-xl flex items-center gap-3 mb-6 text-gray-800">
+              <h3 className="font-bold text-lg flex items-center gap-3 mb-4 text-gray-700">
                 <div className={`p-2 ${section.color} rounded-lg`}>
                   {sectionIndex === 0 ? (
                     <Target size={20} className={section.iconColor} />

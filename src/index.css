@@ -65,41 +65,19 @@ body::before {
   }
 }
 
-/* Performance Optimizations */
+/* Performance Optimizations - Reduce animations for better performance */
 * {
   will-change: auto;
-}
-
-/* Enable GPU acceleration for better performance */
-.premium-card,
-.btn-primary,
-.btn-secondary,
-.btn-accent,
-.icon-professional {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
-
-/* CSS Containment for better rendering performance */
-.premium-section {
-  contain: layout style paint;
-}
-
-.premium-card {
-  contain: layout style;
 }
 
 html {
   scroll-behavior: auto;
   scroll-padding-top: 5rem;
   overflow-x: hidden;
-  text-rendering: optimizeSpeed;
 }
 
 body {
   overflow-x: hidden;
-  contain: layout style;
 }
 
 /* Smooth scrolling for all sections */
