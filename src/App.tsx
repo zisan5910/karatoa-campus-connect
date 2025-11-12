@@ -1,27 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { Element, scroller } from 'react-scroll';
-import { UserCircle, School, BookOpen, Briefcase, FileBadge, Code, HeartHandshake, Mail, Share2, Search, PenTool } from 'lucide-react';
+import { UserCircle, School, BookOpen, Briefcase, FileBadge, Code, HeartHandshake, Mail, Share2, Search, PenTool, Loader2 } from 'lucide-react';
 
-// Import components
-import Certificates from './components/Certificates';
-import Contact from './components/Contact';
-import Courses from './components/Courses';
-import Education from './components/Education';
-import Experience from './components/Experience';
-import FloatingMenu from './components/FloatingMenu';
-import Footer from './components/Footer';
-import Family from './components/Family';
+// Lazy load components for better performance
+const Certificates = lazy(() => import('./components/Certificates'));
+const Contact = lazy(() => import('./components/Contact'));
+const Courses = lazy(() => import('./components/Courses'));
+const Education = lazy(() => import('./components/Education'));
+const Experience = lazy(() => import('./components/Experience'));
+const FloatingMenu = lazy(() => import('./components/FloatingMenu'));
+const Footer = lazy(() => import('./components/Footer'));
+const Family = lazy(() => import('./components/Family'));
+const Skills = lazy(() => import('./components/Skills'));
+
+// Import eagerly loaded components
 import Navigation from './components/Navigation';
 import Profile from './components/Profile';
 import Signature from './components/Signature';
-import Skills from './components/Skills';
 
-// Import pages
-import Research from './pages/Research';
-import Blog from './pages/Blog';
+// Lazy load pages
+const Research = lazy(() => import('./pages/Research'));
+const Blog = lazy(() => import('./pages/Blog'));
 
 // Import data
 import { content, certificates } from './data/content';
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center py-12">
+    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+  </div>
+);
 
 function App() {
   const [language, setLanguage] = useState<'en' | 'bn'>('en');
@@ -91,25 +100,23 @@ function App() {
     }
   }, []);
 
-  // Update URL when section changes
-  const updateURL = (section: string, page: string = 'home') => {
+  // Update URL when section changes - optimized with useCallback
+  const updateURL = useCallback((section: string, page: string = 'home') => {
     const newURL = page === 'home' ? `/${section}` : `/${page}`;
     window.history.pushState({}, '', newURL);
-  };
+  }, []);
 
-  // Smooth scrolling handler
-  const scrollToSection = (section: string) => {
+  // Smooth scrolling handler - optimized with useCallback
+  const scrollToSection = useCallback((section: string) => {
     if (section === 'research') {
       setCurrentPage('research');
       updateURL('research', 'research');
-      // Scroll to top when switching to research page
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     if (section === 'blog') {
       setCurrentPage('blog');
       updateURL('blog', 'blog');
-      // Scroll to top when switching to blog page
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -122,28 +129,35 @@ function App() {
       offset: -64,
     });
     setActiveSection(section);
-  };
+  }, [updateURL]);
 
-  // Back to home handler
-  const handleBackToHome = () => {
+  // Back to home handler - optimized with useCallback
+  const handleBackToHome = useCallback(() => {
     setCurrentPage('home');
     setActiveSection('profile');
     updateURL('profile');
-    // Scroll to top when going back to home
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [updateURL]);
 
-  // Render current page
+  // Render current page with Suspense for lazy loading
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'research':
-        return <Research language={language} />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <Research language={language} />
+          </Suspense>
+        );
       case 'blog':
-        return <Blog language={language} />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <Blog language={language} />
+          </Suspense>
+        );
       default:
         return (
           <>
-            {/* Profile Section */}
+            {/* Profile Section - Eagerly loaded */}
             <Element name="profile">
               <Profile
                 language={language}
@@ -152,55 +166,59 @@ function App() {
               />
             </Element>
 
-            {/* Main Content Sections */}
+            {/* Main Content Sections - Lazy loaded */}
             <main>
-              {/* Education Section */}
-              <Element name="education">
-                <Education language={language} />
-              </Element>
+              <Suspense fallback={<LoadingFallback />}>
+                {/* Education Section */}
+                <Element name="education">
+                  <Education language={language} />
+                </Element>
 
-              {/* Courses Section */}
-              <Element name="courses">
-                <Courses language={language} />
-              </Element>
+                {/* Courses Section */}
+                <Element name="courses">
+                  <Courses language={language} />
+                </Element>
 
-              {/* Experience Section */}
-              <Element name="experience">
-                <Experience language={language} />
-              </Element>
+                {/* Experience Section */}
+                <Element name="experience">
+                  <Experience language={language} />
+                </Element>
 
-              {/* Certificates Section */}
-              <Element name="certificates">
-                <Certificates
-                  language={language}
-                  content={content}
-                  certificates={certificates}
-                />
-              </Element>
+                {/* Certificates Section */}
+                <Element name="certificates">
+                  <Certificates
+                    language={language}
+                    content={content}
+                    certificates={certificates}
+                  />
+                </Element>
 
-              {/* Skills Section */}
-              <Element name="skills">
-                <Skills language={language} />
-              </Element>
+                {/* Skills Section */}
+                <Element name="skills">
+                  <Skills language={language} />
+                </Element>
 
-              {/* Family Information Section */}
-              <Element name="family">
-                <Family language={language} age={age} />
-              </Element>
+                {/* Family Information Section */}
+                <Element name="family">
+                  <Family language={language} age={age} />
+                </Element>
 
-              {/* Contact Section */}
-              <Element name="contact">
-                <Contact language={language} />
-              </Element>
+                {/* Contact Section */}
+                <Element name="contact">
+                  <Contact language={language} />
+                </Element>
+              </Suspense>
             </main>
 
             {/* Signature Section */}
             <Signature />
 
             {/* Footer */}
-            <Element name="footer">
-              <Footer language={language} />
-            </Element>
+            <Suspense fallback={<LoadingFallback />}>
+              <Element name="footer">
+                <Footer language={language} />
+              </Element>
+            </Suspense>
           </>
         );
     }
@@ -222,8 +240,10 @@ function App() {
       {/* Render Current Page */}
       {renderCurrentPage()}
 
-      {/* Professional Floating Menu */}
-      <FloatingMenu />
+      {/* Professional Floating Menu - Lazy loaded */}
+      <Suspense fallback={null}>
+        <FloatingMenu />
+      </Suspense>
     </div>
   );
 }
