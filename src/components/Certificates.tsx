@@ -389,19 +389,19 @@ const CertificateSlider = ({ certificates, language }: CertificateSliderProps) =
                 {getVisibleDots().map((index) => (
                   <button
                     key={index}
+                    onClick={() => handleDotClick(index)}
+                    aria-label={`Go to certificate ${index + 1}`}
                     className={`rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 ${
                       index === currentIndex 
                         ? 'bg-green-600' 
                         : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                     style={{
-                      width: `${getDotScale(index) * 6}px`,
-                      height: `${getDotScale(index) * 6}px`,
+                      width: window.innerWidth < 768 ? `${getDotScale(index) * 4}px` : `${getDotScale(index) * 5}px`,
+                      height: window.innerWidth < 768 ? `${getDotScale(index) * 4}px` : `${getDotScale(index) * 5}px`,
                       opacity: getDotOpacity(index),
                       transform: `scale(${getDotScale(index)})`,
                     }}
-                    onClick={() => handleDotClick(index)}
-                    aria-label={`Go to certificate ${index + 1}`}
                   />
                 ))}
               </div>

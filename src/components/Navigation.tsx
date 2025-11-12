@@ -110,7 +110,7 @@ const Navigation = ({
               className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none transition-colors duration-150"
               aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           )}
 

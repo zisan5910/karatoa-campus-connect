@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Element } from 'react-scroll';
-import { GraduationCap, School, ExternalLink, BookOpen } from 'lucide-react';
+import { GraduationCap, School, ExternalLink } from 'lucide-react';
 
 interface EducationProps {
   language: 'en' | 'bn';
@@ -108,7 +108,7 @@ const Education = ({ language }: EducationProps) => {
     <Element name="education">
       <PremiumSection
         title={language === 'en' ? 'Education' : 'শিক্ষা'}
-        icon={<BookOpen className="text-white" size={24} />}
+        icon={<School className="text-white" size={24} />}
         theme="education"
       >
 

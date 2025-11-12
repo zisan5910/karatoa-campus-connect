@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Element } from 'react-scroll';
-import { Heart, ExternalLink } from 'lucide-react';
+import { ExternalLink, HeartHandshake } from 'lucide-react';
 import SectionHeader from './ui/SectionHeader';
 
 interface InformationProps {
@@ -114,7 +114,7 @@ const Information = ({ language, age }: InformationProps) => {
     <Element name="family">
       <PremiumSection
         title={language === 'en' ? 'Family & Personal Information' : 'পারিবারিক ও ব্যক্তিগত তথ্য'}
-        icon={<Heart className="text-white" size={24} />}
+        icon={<HeartHandshake className="text-white" size={24} />}
         theme="family"
       >
 

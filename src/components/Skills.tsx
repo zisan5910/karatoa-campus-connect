@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { Element } from 'react-scroll';
 import {
-  Award,
   Languages,
   Target,
   MessageSquare,
   PlusCircle,
   Star,
   ChevronRight,
+  Code,
 } from 'lucide-react';
 import SectionHeader from './ui/SectionHeader';
 
@@ -192,7 +192,7 @@ const Skills = ({ language }: SkillsProps) => {
     <Element name="skills">
       <PremiumSection
         title={language === 'en' ? 'Skills & Competencies' : 'দক্ষতা ও সক্ষমতা'}
-        icon={<Award className="text-white" size={24} />}
+        icon={<Code className="text-white" size={24} />}
         theme="skills"
       >
 

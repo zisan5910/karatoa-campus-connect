@@ -14,7 +14,7 @@ const Signature = () => {
           <motion.img
             src="/signature.png"
             alt="Ridoan's Signature"
-            className="w-48 h-auto mb-4 filter invert dark:invert-0"
+            className="w-48 md:w-56 lg:w-64 h-auto mb-4 filter invert dark:invert-0 max-w-[120px] sm:max-w-[160px] md:max-w-[200px]"
             initial={{ scale: 0.8, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
